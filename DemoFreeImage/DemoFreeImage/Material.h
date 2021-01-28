@@ -1,7 +1,8 @@
 #pragma once
 #include "GameObject.h"
 
-class Material {
+class Material
+{
 public:
 	float BlinnPhong();
 };

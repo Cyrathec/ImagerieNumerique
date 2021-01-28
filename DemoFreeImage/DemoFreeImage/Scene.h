@@ -2,8 +2,10 @@
 #include <vector>
 #include "GameObject.h"
 
-class Scene {
+class Scene
+{
 public:
-	std::vector<GameObject> scene;
+	std::vector<GameObject*> scene;
 	Scene();
+	~Scene();
 };
