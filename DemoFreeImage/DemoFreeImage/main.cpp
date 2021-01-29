@@ -62,12 +62,8 @@ Scene * createScene()
 	// Code are made for that below
 
 	// This is made for simplicity but we should search for all
-	Camera * camera = nullptr;
-	if (scene->scene.at(0)->type == "Camera")
-	{
-		camera = static_cast<Camera*>(scene->scene.at(0));
-	}
-	else
+	Camera * camera = scene->GetCameras().at(0);
+	if (camera == nullptr)
 	{
 		delete camera;
 		return nullptr;

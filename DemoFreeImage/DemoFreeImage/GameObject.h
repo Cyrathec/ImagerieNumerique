@@ -6,6 +6,7 @@ class GameObject
 {
 public:
 	static int		index;
+	std::string		name;
 	std::string		type;
 	Vector::Vector3 position;
 	Vector::Vector3 direction;

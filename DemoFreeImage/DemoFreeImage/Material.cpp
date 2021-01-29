@@ -1,8 +1,8 @@
 #include "Material.h"
 
-float Material::BlinnPhong()
+Color Material::BlinnPhong()
 {
-	float I = -1.0f;
+	Color I;
 
 	// TODO
 

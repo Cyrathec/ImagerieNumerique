@@ -1,8 +1,15 @@
 #pragma once
-#include "GameObject.h"
 
 class Material
 {
 public:
-	float BlinnPhong();
+	Color color;
+	Color BlinnPhong();
 };
+
+typedef struct
+{
+	int r;
+	int g;
+	int b;
+}Color;
