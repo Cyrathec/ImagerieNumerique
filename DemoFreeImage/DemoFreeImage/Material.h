@@ -3,8 +3,8 @@
 class Material
 {
 public:
-	Color color;
-	Color BlinnPhong();
+	int color;
+	void BlinnPhong();
 };
 
 typedef struct

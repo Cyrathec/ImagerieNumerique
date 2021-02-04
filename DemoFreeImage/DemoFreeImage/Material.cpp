@@ -1,10 +1,10 @@
 #include "Material.h"
 
-Color Material::BlinnPhong()
+void Material::BlinnPhong()
 {
 	Color I;
 
 	// TODO
 
-	return I;
+	return;
 }
