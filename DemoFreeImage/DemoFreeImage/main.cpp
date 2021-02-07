@@ -5,6 +5,8 @@
 #include "Camera.h"
 #include "Sphere.h"
 #include "Plan.h"
+#include "Light.h"
+#include "Ray.h"
 
 Scene * createScene();
 bool ** interTestMethode(Scene * scene); // test the intersection between the focal plan & the sphere
@@ -83,11 +85,13 @@ Scene * createScene()
 	return scene;
 }
 
+// TODO: Fonction lancer de rayon (pos depart, pos arrivee, scene*, pas) retourne l'id de l'object touché à créer
 bool ** interTestMethode(Scene * scene)
 {
 	Camera	* camera	= nullptr;
 	Plan	* plan		= nullptr;
 	Sphere	* sphere	= nullptr;
+	Light	* light		= nullptr;
 
 	for (size_t i = 0; i < scene->scene.size(); i++)
 	{
@@ -103,17 +107,31 @@ bool ** interTestMethode(Scene * scene)
 		{
 			sphere = static_cast<Sphere*>(scene->scene.at(i));
 		}
+		if (scene->scene.at(i)->type == "Light")
+		{
+			light = static_cast<Light*>(scene->scene.at(i));
+		}
 	}
 
-	if (camera == nullptr || sphere == nullptr || plan == nullptr)
+	if (camera == nullptr || sphere == nullptr || plan == nullptr || light == nullptr)
 	{
 		return nullptr;
 	}
 
 	bool ** pixels = static_cast<bool**>(malloc(camera->resheigth * sizeof(bool*)));
+
+	if (pixels == nullptr) {
+		return nullptr;
+	}
+
 	for (int i = 0; i < camera->resheigth; i++)
 	{
 		pixels[i] = static_cast<bool*>(malloc(camera->reswidth * sizeof(bool)));
+
+		if (pixels[i] == nullptr) {
+			return nullptr;
+		}
+
 		for (int j = 0; j < camera->reswidth; j++)
 		{
 			pixels[i][j] = false;
@@ -127,17 +145,32 @@ bool ** interTestMethode(Scene * scene)
 	{
 		for (int j = 0; j < camera->reswidth; j++)
 		{
-			float distance = sphere->position.CalcDistance(Vector::Vector3(x, y, plan->position.z));
-			if (distance <= sphere->range)
+			Vector::Vector3 dir = Vector::Vector3(x - camera->position.x, y - camera->position.y, plan->position.z - camera->position.z).Normalize();
+
+			float scale = -camera->nearplane / dir.z;
+			Vector::Vector3 start = Vector::Vector3(dir.x * scale, dir.y * scale, dir.z * scale);
+
+			scale = -camera->farplane / dir.z;
+			Vector::Vector3 finish = Vector::Vector3(dir.x * scale, dir.y * scale, dir.z * scale);
+
+			float pixelstep = 1.0f / (camera->farplane * 10);
+			if (camera->nearplane != 0.0f)
+			{
+				float pixelstep = camera->nearplane / (camera->farplane * 10);
+			}
+
+			pixelstep = 0.1f; // DEBUG
+
+			int test = rayLaunch(start, finish, scene, pixelstep);
+
+			if (test >= 0)
 			{
 				pixels[i][j] = true;
 			}
-			else
-			{
-				pixels[i][j] = false;
-			}
 			x += plan->width / camera->reswidth;
+			break;
 		}
+		break;
 		x = plan->position.x - plan->width / 2;
 		y += plan->height / camera->resheigth;
 	}
