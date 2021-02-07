@@ -16,6 +16,62 @@ std::vector<Camera*> Scene::GetCameras()
 	return cameras;
 }
 
+std::vector<Light*> Scene::GetLights()
+{
+	std::vector<Light*> lights;
+
+	for (size_t i = 0; i < scene.size(); i++)
+	{
+		if (scene.at(i)->type == "Light") {
+			lights.push_back(static_cast<Light*>(scene.at(i)));
+		}
+	}
+
+	return lights;
+}
+
+std::vector<D3Object*> Scene::GetD3Objects()
+{
+	std::vector<D3Object*> objects;
+
+	for (size_t i = 0; i < scene.size(); i++)
+	{
+		if (scene.at(i)->type == "Plan" || scene.at(i)->type == "Sphere") {
+			objects.push_back(static_cast<D3Object*>(scene.at(i)));
+		}
+	}
+
+	return objects;
+}
+
+std::vector<Plan*> Scene::GetPlans()
+{
+	std::vector<Plan*> plans;
+
+	for (size_t i = 0; i < scene.size(); i++)
+	{
+		if (scene.at(i)->type == "Plan") {
+			plans.push_back(static_cast<Plan*>(scene.at(i)));
+		}
+	}
+
+	return plans;
+}
+
+std::vector<Sphere*> Scene::GetSphere()
+{
+	std::vector<Sphere*> spheres;
+
+	for (size_t i = 0; i < scene.size(); i++)
+	{
+		if (scene.at(i)->type == "Sphere") {
+			spheres.push_back(static_cast<Sphere*>(scene.at(i)));
+		}
+	}
+
+	return spheres;
+}
+
 Scene::Scene()
 {
 	scene.push_back(new Camera());
