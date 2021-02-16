@@ -16,6 +16,7 @@ namespace Vector
 		Vector3	ReflectVector(Vector3 normal);
 		float	CalcDistance(Vector3 vector);
 		float	ScalaireProduct(Vector3 vector);
+		void	ZeroSignCorrection();
 		void	CalcNorm();
 
 		Vector3();

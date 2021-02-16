@@ -36,6 +36,22 @@ namespace Vector
 		return reflected;
 	}
 
+	void Vector3::ZeroSignCorrection()
+	{
+		if (x == 0.0f)
+		{
+			x = 0.0f;
+		}
+		if (y == 0.0f)
+		{
+			y = 0.0f;
+		}
+		if (z == 0.0f)
+		{
+			z = 0.0f;
+		}
+	}
+
 	float Vector3::CalcDistance(Vector3 vector)
 	{
 		return sqrtf(	(vector.x - x) * (vector.x - x) +

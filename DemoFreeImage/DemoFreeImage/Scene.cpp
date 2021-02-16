@@ -58,7 +58,7 @@ std::vector<Plan*> Scene::GetPlans()
 	return plans;
 }
 
-std::vector<Sphere*> Scene::GetSphere()
+std::vector<Sphere*> Scene::GetSpheres()
 {
 	std::vector<Sphere*> spheres;
 
@@ -72,14 +72,26 @@ std::vector<Sphere*> Scene::GetSphere()
 	return spheres;
 }
 
+std::vector<Triangle*> Scene::GetTriangle()
+{
+	std::vector<Triangle*> triangles;
+
+	for (size_t i = 0; i < scene.size(); i++)
+	{
+		if (scene.at(i)->type == "Triangle") {
+			triangles.push_back(static_cast<Triangle*>(scene.at(i)));
+		}
+	}
+
+	return triangles;
+}
+
 Scene::Scene()
 {
 	scene.push_back(new Camera());
-	scene.back()->position = Vector::Vector3(0.0f, 0.0f, 0.0f);
-	scene.back()->direction = Vector::Vector3(0.0f, 0.0f, -1.0f);
+	scene.back()->direction.z = -1.0f;
 	scene.push_back(new Light());
-	scene.back()->position = Vector::Vector3(0.0f, 100.0f, 0.0f);
-	scene.back()->direction = Vector::Vector3(0.0f, 0.0f, 0.0f);
+	scene.back()->position.y = 100.0f;
 }
 
 Scene::~Scene()
