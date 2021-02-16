@@ -4,6 +4,7 @@
 #include "Light.h"
 #include "Plan.h"
 #include "Sphere.h"
+#include "Triangle.h"
 
 class Scene
 {
@@ -13,7 +14,8 @@ public:
 	std::vector<Light*> GetLights();
 	std::vector<D3Object*> GetD3Objects();
 	std::vector<Plan*> GetPlans();
-	std::vector<Sphere*> GetSphere();
+	std::vector<Sphere*> GetSpheres();
+	std::vector<Triangle*> GetTriangle();
 	Scene();
 	~Scene();
 };

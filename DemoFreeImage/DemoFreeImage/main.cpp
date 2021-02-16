@@ -7,9 +7,10 @@
 #include "Plan.h"
 #include "Light.h"
 #include "Ray.h"
+#include "Triangle.h"
 
 Scene * createScene();
-bool ** interTestMethode(Scene * scene); // test the intersection between the focal plan & the sphere
+std::vector<std::vector<bool>> intersections(Scene* scene);
 
 int main(int argc, char** argv)
 {
@@ -18,9 +19,9 @@ int main(int argc, char** argv)
 	image = FreeImage_Allocate(640, 480, 32);
 
 	Scene * scene = createScene();
-	bool ** pixels = interTestMethode(scene);
+	std::vector<std::vector<bool>> pixels = intersections(scene);
 
-	if (pixels == nullptr)
+	if (pixels.size() == 0)
 	{
 		return 1;
 	}
@@ -60,7 +61,7 @@ int main(int argc, char** argv)
 Scene * createScene()
 {
 	Scene * scene = new Scene();
-	// For now the camera look toward (0, 0, -1)
+	// For now the camera look toward (1, 1, -1)
 	// Code are made for that below
 
 	// This is made for simplicity but we should search for all
@@ -71,53 +72,67 @@ Scene * createScene()
 		return nullptr;
 	}
 
+	// Creating the focale plan
 	Plan * planfocale = new Plan();
 	planfocale->position = Vector::Vector3(camera->position.x, camera->position.y, camera->position.z + camera->direction.z * camera->focal);
 	planfocale->width = camera->focalwidth;
 	planfocale->height = (planfocale->width * camera->resheigth) / camera->reswidth;
 	scene->scene.push_back(planfocale);
 
+	// Creating a sphere
 	Sphere * sphere = new Sphere();
 	sphere->position = Vector::Vector3(camera->position.x, camera->position.y, camera->position.z + camera->direction.z * camera->focal);
 	sphere->range = 0.5f;
 	scene->scene.push_back(sphere);
 
+	// Creating a triangle
+	Triangle * triangle = new Triangle(Vector::Vector3(-1.0f, 0.75f, 0.0f), Vector::Vector3(0.0f, -0.75f, 0.0f), Vector::Vector3(1.0f, 0.75f, 0.0f));
+	triangle->position.z = -1.0f;
+
 	return scene;
 }
 
-// TODO: Fonction lancer de rayon (pos depart, pos arrivee, scene*, pas) retourne l'id de l'object touché à créer
-bool ** interTestMethode(Scene * scene)
+std::vector<std::vector<bool>> intersections(Scene * scene)
 {
-	Camera	* camera	= nullptr;
-	Plan	* plan		= nullptr;
-	Sphere	* sphere	= nullptr;
-	Light	* light		= nullptr;
 
-	for (size_t i = 0; i < scene->scene.size(); i++)
+	std::vector<Camera*>	cameras	= scene->GetCameras();
+	std::vector<Light*>		lights	= scene->GetLights();
+	std::vector<Plan*>		plans	= scene->GetPlans();
+	std::vector<Sphere*>	spheres	= scene->GetSpheres();
+
+	if (cameras.size() == 0 || spheres.size() == 0 || plans.size() == 0 || lights.size() == 0)
 	{
-		if (scene->scene.at(i)->type == "Camera")
+		std::vector<std::vector<bool>> tmp;
+		printf("size %d\n", tmp.size());
+		tmp.resize(0);
+		return tmp;
+	}
+
+	Camera	*	camera	= cameras.at(0);
+	Light	*	light	= lights.at(0);
+	Plan	*	plan	= plans.at(0);
+
+	if (camera == nullptr || spheres.at(0) == nullptr || plan == nullptr || light == nullptr)
+	{
+		std::vector<std::vector<bool>> tmp;
+		printf("size %d\n", tmp.size());
+		tmp.resize(0);
+		return tmp;
+	}
+
+	std::vector<std::vector<bool>> pixels;
+	pixels.resize(camera->resheigth);
+
+	for (int i = 0; i < camera->resheigth; i++)
+	{
+		pixels.at(i).resize(camera->reswidth);
+		for (int j = 0; j < camera->reswidth; j++)
 		{
-			camera = static_cast<Camera*>(scene->scene.at(i));
-		}
-		if (scene->scene.at(i)->type == "Plan")
-		{
-			plan = static_cast<Plan*>(scene->scene.at(i));
-		}
-		if (scene->scene.at(i)->type == "Sphere")
-		{
-			sphere = static_cast<Sphere*>(scene->scene.at(i));
-		}
-		if (scene->scene.at(i)->type == "Light")
-		{
-			light = static_cast<Light*>(scene->scene.at(i));
+			pixels.at(i).at(j) = false;
 		}
 	}
 
-	if (camera == nullptr || sphere == nullptr || plan == nullptr || light == nullptr)
-	{
-		return nullptr;
-	}
-
+	/*
 	bool ** pixels = static_cast<bool**>(malloc(camera->resheigth * sizeof(bool*)));
 
 	if (pixels == nullptr) {
@@ -137,6 +152,7 @@ bool ** interTestMethode(Scene * scene)
 			pixels[i][j] = false;
 		}
 	}
+	*/
 
 	float y = plan->position.y - plan->height / 2;
 	float x = plan->position.x - plan->width / 2;
@@ -165,7 +181,8 @@ bool ** interTestMethode(Scene * scene)
 
 			if (test >= 0)
 			{
-				pixels[i][j] = true;
+				printf("1");
+				pixels.at(i).at(j) = true;
 			}
 			x += plan->width / camera->reswidth;
 			break;
