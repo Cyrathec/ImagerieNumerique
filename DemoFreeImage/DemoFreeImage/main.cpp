@@ -132,28 +132,6 @@ std::vector<std::vector<bool>> intersections(Scene * scene)
 		}
 	}
 
-	/*
-	bool ** pixels = static_cast<bool**>(malloc(camera->resheigth * sizeof(bool*)));
-
-	if (pixels == nullptr) {
-		return nullptr;
-	}
-
-	for (int i = 0; i < camera->resheigth; i++)
-	{
-		pixels[i] = static_cast<bool*>(malloc(camera->reswidth * sizeof(bool)));
-
-		if (pixels[i] == nullptr) {
-			return nullptr;
-		}
-
-		for (int j = 0; j < camera->reswidth; j++)
-		{
-			pixels[i][j] = false;
-		}
-	}
-	*/
-
 	float y = plan->position.y - plan->height / 2;
 	float x = plan->position.x - plan->width / 2;
 
@@ -181,13 +159,10 @@ std::vector<std::vector<bool>> intersections(Scene * scene)
 
 			if (test >= 0)
 			{
-				printf("1");
 				pixels.at(i).at(j) = true;
 			}
 			x += plan->width / camera->reswidth;
-			break;
 		}
-		break;
 		x = plan->position.x - plan->width / 2;
 		y += plan->height / camera->resheigth;
 	}

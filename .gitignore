@@ -4,5 +4,6 @@
 *.vs
 DemoFreeImage/bin
 DemoFreeImage/x64
+DemoFreeImage/DemoFreeImage/Release
 DemoFreeImage/DemoFreeImage/Debug
 DemoFreeImage/DemoFreeImage/x64
